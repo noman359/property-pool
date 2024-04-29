@@ -18,8 +18,9 @@
     "aws-sdk": "^2.1470.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
-    "date-fns": "^3.0.6"
-    
+    "date-fns": "^3.0.6",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.0",
