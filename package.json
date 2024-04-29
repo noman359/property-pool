@@ -16,8 +16,10 @@
     "@aws-sdk/lib-storage": "^3.423.0",
     "@prisma/client": "^5.3.1",
     "aws-sdk": "^2.1470.0",
-    "body-parser": "^1.19.0"
-
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "date-fns": "^3.0.6"
+    
   },
   "devDependencies": {
     "@babel/cli": "^7.23.0",
