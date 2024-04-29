@@ -1,0 +1,88 @@
+{
+  "name": "template-file",
+  "version": "6.0.1",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "description": "🔀 Replace {{ variables }} in all your files",
+  "repository": "https://github.com/gsandf/template-file",
+  "contributors": [
+    "Blake Knight <oss.ideas@gmail.com> (http://blakek.me/)"
+  ],
+  "homepage": "https://github.com/gsandf/template-file#readme",
+  "bugs": {
+    "url": "https://github.com/gsandf/template-file/issues"
+  },
+  "keywords": [
+    "replace",
+    "template",
+    "handlebars"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist/**"
+  ],
+  "sideEffects": false,
+  "types": "dist/index.d.ts",
+  "bin": "dist/cli.js",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "ava": {
+    "extensions": [
+      "js",
+      "ts"
+    ],
+    "files": [
+      "__tests__/**/*.ts"
+    ],
+    "ignoredByWatcher": [
+      "!src/**"
+    ],
+    "require": [
+      "./.ava-entry.js"
+    ],
+    "timeout": "30s"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ],
+  "dependencies": {
+    "@blakek/deep": "^2.2.0",
+    "glob": "^7.1.6",
+    "mkdirp": "^1.0.4",
+    "p-limit": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.3",
+    "@types/mkdirp": "^1.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.3.1",
+    "@typescript-eslint/parser": "^5.3.1",
+    "amper-scripts": "^1.0.0-1",
+    "ava": "^3.13.0",
+    "nodemon": "^2.0.6",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "ts-loader": "^9.2.6",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.1.2",
+    "webpack": "^5.63.0",
+    "webpack-cli": "^4.9.1"
+  },
+  "peerDependencies": {},
+  "scripts": {
+    "build": "webpack --mode=production",
+    "build:dev": "webpack --mode=development",
+    "format-check": "amper-scripts format-check '*.{js,ts,tsx}' 'src/**/*.{js,ts,tsx}'",
+    "format": "amper-scripts format-write '*.{js,ts,tsx}' 'src/**/*.{js,ts,tsx}'",
+    "lint": "amper-scripts lint --config ./.eslintrc.js '*.{js,ts,tsx}' 'src/**/*.{js,ts,tsx}'",
+    "prepack": "run-s build validate",
+    "test": "ava",
+    "typeCheck": "tsc --noEmit",
+    "validate": "run-p test format-check lint typeCheck"
+  }
+}
