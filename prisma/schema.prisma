@@ -1,0 +1,36 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id         Int       @id @default(autoincrement())
+  first_name String?   @db.VarChar(45)
+  last_name  String?   @db.VarChar(45)
+  email      String    @unique(map: "email_UNIQUE") @db.VarChar(100)
+  password   String?   @db.VarChar(100)
+  created_at DateTime? @db.DateTime(0)
+  gates      gates[]
+}
+
+model gates {
+  id              Int       @id @default(autoincrement())
+  title           String    @db.VarChar(45)
+  description     String    @db.VarChar(500)
+  image           String?   @db.VarChar(200)
+  gate_path       String    @db.VarChar(200)
+  created_at      DateTime? @db.DateTime(0)
+  updated_at      DateTime? @db.DateTime(0)
+  user_id         Int?
+  post_path       String?   @db.VarChar(200)
+  post_top_path   String?   @db.VarChar(200)
+  rail_heads_path String?   @db.VarChar(200)
+  users           users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_gate_lt_user")
+
+  @@index([user_id], map: "fk_gate_lt_user")
+}
