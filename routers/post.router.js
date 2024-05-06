@@ -16,4 +16,6 @@ export default function (router) {
      lRoute.delete('/:id', postControllerr.deletePost, handler.apiResponseHandler)
      lRoute.post('/like/:id', postControllerr.likePost, handler.apiResponseHandler)
      lRoute.post('/unlike/:id', postControllerr.unlikePost, handler.apiResponseHandler)
+     lRoute.post('/favorite/:id', postControllerr.favoritePost, handler.apiResponseHandler)
+     lRoute.post('/unfavorite/:id', postControllerr.unfavoritePost, handler.apiResponseHandler)
 }

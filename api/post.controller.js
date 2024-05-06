@@ -49,4 +49,14 @@ export default class PostController {
         next(post)
     }
 
+    async favoritePost(req, res, next) {
+        let post = await postService.favoritePost(req)
+        next(post)
+    }
+
+    async unfavoritePost(req, res, next) {
+        let post = await postService.unfavoritePost(req)
+        next(post)
+    }
+
 }
