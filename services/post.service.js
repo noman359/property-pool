@@ -212,8 +212,9 @@ export default class PostService {
                 return servResp
             }
             console.debug('deletePost() started')
-            servResp.data = await db.posts.deleteMany({
+            servResp.data = await db.posts.delete({
                 where: {
+                    customer_id: Number(token.id),
                     id: Number(id)
                 }
             })
