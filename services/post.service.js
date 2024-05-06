@@ -79,7 +79,7 @@ export default class PostService {
 
             let post = await db.posts.create({
                 data: {
-                    description: body.first_name,
+                    description: body.description,
                     media_urls: postDetail.images || undefined,
                     created_at: new Date(new Date().toUTCString()),
                     customer_id: token.id
@@ -159,7 +159,8 @@ export default class PostService {
                 data: {
                     description: postDetail.description,
                     media_urls: postDetail.images || undefined,
-                    created_at: new Date(new Date().toUTCString())                },
+                    created_at: new Date(new Date().toUTCString())                
+                },
                 where: {
                     id: Number(req.params.id),
                     customer_id: Number(token.id)
@@ -221,6 +222,65 @@ export default class PostService {
             console.debug('deletePost() returning')
         } catch (error) {
             console.debug('deletePost() exception thrown')
+            servResp.isError = true
+            servResp.message = error.message
+        }
+        return servResp
+    }
+
+    async getMyPosts(req) {
+        let servResp = new config.serviceResponse()
+        let query = req.query
+        let token = await tokenHandler.checkToken(req)
+        if (token.isError == true) {
+            servResp.isError = true
+            servResp.message = 'Token is not valid'
+            return servResp
+        }
+
+        try {
+            const posts = await db.posts.findMany({
+                where: {
+                    customer_id: Number(token.id)
+                },
+                skip: Number((query.page - 1)) * Number(query.limit), // Calculate the number of records to skip based on page number
+                take: Number(query.limit), // Set the number of records to be returned per page
+
+            });
+
+
+            servResp.data = posts
+            console.debug('getVendorData() ended')
+        } catch (error) {
+            console.debug('createVendor() exception thrown')
+            servResp.isError = true
+            servResp.message = error.message
+        }
+        return servResp
+    }
+
+    async getPosts(req) {
+        let servResp = new config.serviceResponse()
+        let query = req.query
+        let token = await tokenHandler.checkToken(req)
+        if (token.isError == true) {
+            servResp.isError = true
+            servResp.message = 'Token is not valid'
+            return servResp
+        }
+
+        try {
+            const posts = await db.posts.findMany({
+                skip: Number((query.page - 1)) * Number(query.limit), // Calculate the number of records to skip based on page number
+                take: Number(query.limit), // Set the number of records to be returned per page
+
+            });
+
+
+            servResp.data = posts
+            console.debug('getVendorData() ended')
+        } catch (error) {
+            console.debug('createVendor() exception thrown')
             servResp.isError = true
             servResp.message = error.message
         }
