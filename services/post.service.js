@@ -287,5 +287,59 @@ export default class PostService {
         return servResp
     }
 
+    async likePost(req) {
+        let servResp = new config.serviceResponse()
+        let id = req.params.id
+        try {
+            let token = await tokenHandler.checkToken(req)
+            if (token.isError == true) {
+                servResp.isError = true
+                servResp.message = 'Token is not valid'
+                return servResp
+            }
+            console.debug('deletePost() started')
+            servResp.data = await db.likes.create({
+                data: {
+                    created_at: new Date(new Date().toUTCString()),
+                    customer_id: Number(token.id),
+                    post_id: Number(id),
+                }
+            })
+            console.debug('deletePost() returning')
+        } catch (error) {
+            console.debug('deletePost() exception thrown')
+            servResp.isError = true
+            servResp.message = error.message
+        }
+        return servResp
+    }
+
+    async unlikePost(req) {
+        let servResp = new config.serviceResponse()
+        let id = req.params.id
+        try {
+            let token = await tokenHandler.checkToken(req)
+            if (token.isError == true) {
+                servResp.isError = true
+                servResp.message = 'Token is not valid'
+                return servResp
+            }
+            console.debug('deletePost() started')
+            servResp.data = await db.likes.delete({
+                where: {
+                    id: Number(id),
+                    customer_id: Number(token.id)
+                }
+            })
+            console.debug('deletePost() returning')
+        } catch (error) {
+            console.debug('deletePost() exception thrown')
+            servResp.isError = true
+            servResp.message = error.message
+        }
+        return servResp
+    }
+
+
 }
 

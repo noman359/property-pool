@@ -20,23 +20,33 @@ export default class PostController {
     }
 
     async getPost(req, res, next) {
-        let customer = await postService.getPost(req)
-        next(customer)
+        let post = await postService.getPost(req)
+        next(post)
     }
 
     async getPostList(req, res, next) {
-        let customer = await postService.getPosts(req)
-        next(customer)
+        let posts = await postService.getPosts(req)
+        next(posts)
     }
 
     async getMyPosts(req, res, next) {
-        let customer = await postService.getMyPosts(req)
-        next(customer)
+        let posts = await postService.getMyPosts(req)
+        next(posts)
     }
 
     async deletePost(req, res, next) {
-        let customer = await postService.deletePost(req)
-        next(customer)
+        let post = await postService.deletePost(req)
+        next(post)
+    }
+
+    async likePost(req, res, next) {
+        let post = await postService.likePost(req)
+        next(post)
+    }
+
+    async unlikePost(req, res, next) {
+        let post = await postService.unlikePost(req)
+        next(post)
     }
 
 }
