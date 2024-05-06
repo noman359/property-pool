@@ -21,14 +21,15 @@ export default class CustomerService {
     async createCustomer(customerBody) {
         let servResp = new config.serviceResponse()
         let customer_avatar = new Object()
+        let body = customerBody.body
         try {
             console.debug('createCustomer() started')
 
 
             if (customerBody.email != null) {
-                let customer = await db.users.findFirst({
+                let customer = await db.customers.findFirst({
                     where: {
-                        email: customerBody.email
+                        email: body.email
                     }
                 })
                 if (customer != null) {
@@ -40,20 +41,20 @@ export default class CustomerService {
 
             }
 
-            const encrptedPassword = encryption.encrypt(customerBody.password)
-            await db.users.create({
+            const encrptedPassword = encryption.encrypt(body.password)
+            await db.customers.create({
                 data: {
-                    email: customerBody.email,
-                    first_name: customerBody.first_name,
-                    last_name: customerBody.last_name,
+                    email: body.email,
+                    first_name: body.first_name,
+                    last_name: body.last_name,
                     password: encrptedPassword,
                     created_at: new Date(new Date().toUTCString()),
                 }
             })
 
-            let newCustomer = await db.users.findFirst({
+            let newCustomer = await db.customers.findFirst({
                 where: {
-                    email: customerBody.email
+                    email: body.email
                 }
             })
 
@@ -90,26 +91,26 @@ export default class CustomerService {
 
 
             console.debug('update Customer() started')
-            let customer = await db.users.findFirst({ where: { id: token.id } })
+            let customer = await db.customers.findFirst({ where: { id: token.id } })
 
             if (!customer) {
                 throw new Error('Customer not found!')
             }
 
-            // if (customerBody.avatar) {
-            //     if (typeof customerBody.avatar === 'string') {
-            //         customer_avatar['url'] = customerBody.avatar
-            //     } else {
-            //         var arr = customerBody.avatar.name.split('.')
-            //         let extentionName = arr[arr.length - 1]
-            //         let avatar_val = {
-            //             bucket: config.london_gates_s3_bucket_name,
-            //             key: `${uuidv4()}.${extentionName}`,
-            //             body: await bucket.fileToArrayBuffer(customerBody.avatar)
-            //         }
-            //         customer_avatar = await bucket.upload(avatar_val)
-            //     }
-            // }
+            if (customerBody.avatar) {
+                if (typeof customerBody.avatar === 'string') {
+                    customer_avatar['url'] = customerBody.avatar
+                } else {
+                    var arr = customerBody.avatar.name.split('.')
+                    let extentionName = arr[arr.length - 1]
+                    let avatar_val = {
+                        bucket: config.pool_property_bucket_name,
+                        key: `${uuidv4()}.${extentionName}`,
+                        body: await bucket.fileToArrayBuffer(customerBody.avatar)
+                    }
+                    customer_avatar = await bucket.upload(avatar_val)
+                }
+            }
 
             var first_name = customer.first_name
             if (customerBody.first_name) {
@@ -121,12 +122,17 @@ export default class CustomerService {
                 last_name = customerBody.last_name
             }
 
-            // customerBody.password = encryption.encrypt(customerBody.password)
+            var newImage = customer.avatar
+            if (customer_avatar.url !== undefined) {
+                newImage = customer_avatar.url
+            }
+
             console.log(newImage)
-            let updatedCustomer = await db.users.update({
+            let updatedCustomer = await db.customers.update({
                 data: {
                     first_name: first_name || undefined,
                     last_name: last_name || undefined,
+                    avatar: newImage || undefined,
                     updated_at: new Date(new Date().toUTCString())
                 },
                 where: {
@@ -158,7 +164,7 @@ export default class CustomerService {
 
 
             console.debug('update Customer() started')
-            let customer = await db.users.findFirst({ where: { id: token.id } })
+            let customer = await db.customers.findFirst({ where: { id: token.id } })
 
             if (!customer) {
                 throw new Error('Customer not found!')
@@ -169,7 +175,7 @@ export default class CustomerService {
             if (password === oldPassword) {
 
                 const newPassword = encryption.encrypt(customerBody.newPassword)
-                let updatedCustomer = await db.users.update({
+                let updatedCustomer = await db.customers.update({
                     data: {
                         password: newPassword || undefined,
                         updated_at: new Date(new Date().toUTCString())
@@ -232,12 +238,9 @@ export default class CustomerService {
                 return servResp
             }
             console.debug('getCustomer() started')
-            servResp.data = await db.users.findFirst({
+            servResp.data = await db.customers.findFirst({
                 where: {
                     id: Number(token.id)
-                },
-                include: {
-                    cities: true
                 }
             })
             console.debug('getCustomer() returning')
@@ -259,7 +262,7 @@ export default class CustomerService {
                 return servResp
             }
             console.debug('getCustomer() started')
-            servResp.data = await db.users.deleteMany({
+            servResp.data = await db.customers.deleteMany({
                 where: {
                     id: Number(token.id)
                 }
@@ -278,7 +281,7 @@ export default class CustomerService {
         try {
             console.debug('customer signIn() started')
             let encrypted_password = encryption.encrypt(query.password)
-            let customer = await db.users.findFirst({
+            let customer = await db.customers.findFirst({
                 where: {
                     email: query.email,
                     password: encrypted_password

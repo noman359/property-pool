@@ -19,7 +19,7 @@ export default {
     AWS_ACCOUNT_SECRET_KEY: process.env.AWS_ACCOUNT_SECRET_KEY,
     AWS_ACCOUNT_REGION: process.env.AWS_ACCOUNT_REGION,
     AWS_ACCOUNT_ID: process.env.AWS_ACCOUNT_ID,
-    london_gates_s3_bucket_name: process.env.london_gates_s3,
+    pool_property_bucket_name: process.env.pool_property_s3,
     JWT_SECURE_KEY: process.env.JWT_SECURE_KEY,
     environment: process.env.environment,
     

@@ -39,6 +39,11 @@ export default class CustomerController {
         next(customer)
     }
 
+    async changePassword(req, res, next) {
+        let updated_customer = await customerServ.changePassword(req)
+        next(updated_customer)
+    }
+
     async customerLogin(req, res, next) {
         let token = await customerServ.signIn(req.body)
         next(token)
