@@ -393,6 +393,39 @@ export default class PostService {
         return servResp
     }
 
+    async getFavorites(req) {
+        let servResp = new config.serviceResponse()
+        let query = req.query
+        let token = await tokenHandler.checkToken(req)
+        if (token.isError == true) {
+            servResp.isError = true
+            servResp.message = 'Token is not valid'
+            return servResp
+        }
+
+        try {
+            const posts = await db.favorites.findMany({
+                where: {
+                    customer_id: Number(token.id)
+                },
+                include: {
+                    posts: true
+                },
+                skip: Number((query.page - 1)) * Number(query.limit), // Calculate the number of records to skip based on page number
+                take: Number(query.limit), // Set the number of records to be returned per page
+            });
+
+
+            servResp.data = posts
+            console.debug('getVendorData() ended')
+        } catch (error) {
+            console.debug('createVendor() exception thrown')
+            servResp.isError = true
+            servResp.message = error.message
+        }
+        return servResp
+    }
+
 
 }
 
